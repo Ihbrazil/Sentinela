@@ -1,0 +1,201 @@
+unit STL100P1T;
+
+{Verificar Atividades do Usuário}
+
+{Programa é destinado à monitoração dos periféricos de entrada de dados. A
+monitoração consiste em verificar a atividade do teclado e do mouse durante
+um tempo pré-estabelecido pela NR 17 e contagem de toques do usuário no teclado
+e no mouse. Transcorrido este tempo ocorre a amostragem de sinais para diminuição
+da velocidade de digitação.}
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls, StdCtrls, Buttons, ComCtrls, Vcl.Menus, Vcl.Themes,
+  Vcl.Styles;
+
+type
+  TFRMverificaratividadesusuario = class(TForm)
+    PNLpreven: TPanel;
+    BTNminimizar: TBitBtn;
+    TMRverificaratividadesusuario: TTimer;
+    GBXcontroles: TGroupBox;
+    TMRtecladomouse: TTimer;
+    TKIsentinelabackground: TTrayIcon;
+    PNLtoquesporminuto: TPanel;
+    LBLSAIDAtotaltoqueporminuto: TLabel;
+    LBLSAIDAtoqueporminuto: TLabel;
+    LBLtotaltoqueporminuto: TLabel;
+    LBLsinalrepouso: TLabel;
+    PNLtempoatvidade: TPanel;
+    LBLSAIDAtotaltempodigitacao: TLabel;
+    LBLSAIDAtempodigitacao: TLabel;
+    LBLtotaltempodigitacao: TLabel;
+    LBLtempodigitacao: TLabel;
+    LBLtoqueporminuto: TLabel;
+    Label1: TLabel;
+    BTNajuda: TBitBtn;
+    PPMsentinela: TPopupMenu;
+    Abrir: TMenuItem;
+    Fechar1: TMenuItem;
+    Minimizar: TMenuItem;
+    N1: TMenuItem;
+    Tema: TMenuItem;
+    Claro: TMenuItem;
+    Escuro: TMenuItem;
+    N2: TMenuItem;
+    procedure TMRverificaratividadesusuarioTimer(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure BTNminimizarClick(Sender: TObject);
+    procedure TMRtecladomouseTimer(Sender: TObject);
+    procedure Fechar1Click(Sender: TObject);
+    procedure AbrirClick(Sender: TObject);
+    procedure MinimizarClick(Sender: TObject);
+    procedure ClaroClick(Sender: TObject);
+    procedure EscuroClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FRMverificaratividadesusuario: TFRMverificaratividadesusuario;
+
+  B_ativataskicon,{Variável booleana que coloca o sistema em background se for
+                   verdadeira}
+  B_arquivossalvos : boolean; {Variável booleana que habilita a interrupção se
+                               for verdadeira}
+  T_hcorrente, {Marca a hora corrente}
+  T_hiniciodigitacao, T_tempodigitacao : ttime;
+  I_toqueporminuto : integer;
+
+
+implementation
+
+uses STL100P1U, STL100P2T, STL100P3T;
+
+{$R *.DFM}
+
+procedure TFRMverificaratividadesusuario.TMRverificaratividadesusuarioTimer(Sender: TObject);
+begin
+  if B_ativataskicon = True then
+    begin
+     BTNminimizarClick(Sender);
+     B_ativataskicon := False;
+    end;
+  {Algoritimo principal}
+  T_hcorrente := time();
+
+  LBLSAIDAtoqueporminuto.Caption := IntToStr(I_toqueporminuto);
+  LBLSAIDAtempodigitacao.caption := TimeToStr(T_tempodigitacao);
+end;
+
+procedure TFRMverificaratividadesusuario.FormCreate(Sender: TObject);
+begin
+     B_ativataskicon := True;
+
+     T_hiniciodigitacao := time();
+     I_toqueporminuto := 0;
+     B_arquivossalvos := False;
+
+     LBLSAIDAtotaltoqueporminuto.caption := '0';
+     LBLSAIDAtotaltempodigitacao.Caption := '00:00:00';
+     LBLSAIDAtotaltoqueporminuto.caption := '0';
+     LBLSAIDAtotaltempodigitacao.Caption := '00:00:00';
+
+     LBLSAIDAtoqueporminuto.Caption := IntToStr(I_toqueporminuto);
+     LBLSAIDAtempodigitacao.caption := TimeToStr(T_tempodigitacao);
+
+     TMRverificaratividadesusuario.Enabled := True;
+     TMRtecladomouse.Enabled := True;
+
+     Abrir.Enabled := True;
+     Minimizar.Enabled := False;
+     Escuro.Enabled := False;
+     Claro.Enabled := True;
+end;
+
+procedure TFRMverificaratividadesusuario.MinimizarClick(Sender: TObject);
+begin
+    BTNminimizarClick(Sender);
+end;
+
+procedure TFRMverificaratividadesusuario.AbrirClick(Sender: TObject);
+begin
+    FRMverificaratividadesusuario.visible := TRUE;
+    FRMsentinela.visible := True;
+    Abrir.Enabled := False;
+    Minimizar.Enabled := True;
+end;
+
+procedure TFRMverificaratividadesusuario.BTNminimizarClick(Sender: TObject);
+begin
+     TKIsentinelabackground.Visible := True;
+     FRMverificaratividadesusuario.Visible := False;
+     Abrir.Enabled := True;
+     Minimizar.Enabled := False;
+end;
+
+procedure TFRMverificaratividadesusuario.ClaroClick(Sender: TObject);
+begin
+    TStyleManager.TrySetStyle('Windows');
+    Escuro.Enabled := True;
+    Claro.Enabled := False;
+end;
+
+procedure TFRMverificaratividadesusuario.EscuroClick(Sender: TObject);
+begin
+    TStyleManager.TrySetStyle('Windows10 Dark');
+    Escuro.Enabled := False;
+    Claro.Enabled := True;
+end;
+
+procedure TFRMverificaratividadesusuario.TMRtecladomouseTimer(Sender: TObject);
+var
+  T_horaatual : ttime;
+begin
+    T_horaatual := time();
+    if tecladomouse then
+        begin
+          T_tempodigitacao := T_horaatual - T_hiniciodigitacao;
+          I_toqueporminuto := I_toqueporminuto + 1;
+          if T_tempodigitacao >= StrToTime('00:01:00') then
+             begin
+               if (I_toqueporminuto <= 115) then
+                  begin
+                    FRMsentinela.IMGsinalverde.Visible := True;
+                    FRMsentinela.IMGsinalamarelo.Visible := False;
+                    FRMsentinela.IMGsinalvermelho.Visible := False;
+                    FRMsentinela.PNLmensagem.Color := clGreen;
+                  end
+               else if (I_toqueporminuto > 115) and (I_toqueporminuto <= 133) then
+                  begin
+                    FRMsentinela.IMGsinalverde.Visible := False;
+                    FRMsentinela.IMGsinalamarelo.Visible := True;
+                    FRMsentinela.IMGsinalvermelho.Visible := False;
+                    FRMsentinela.PNLmensagem.Color := clYellow;
+                  end
+               else if (I_toqueporminuto > 133) then
+                  begin
+                    FRMsentinela.IMGsinalverde.Visible := False;
+                    FRMsentinela.IMGsinalamarelo.Visible := False;
+                    FRMsentinela.IMGsinalvermelho.Visible := True;
+                    FRMsentinela.PNLmensagem.Color := clRed;
+                  end;
+               LBLSAIDAtotaltoqueporminuto.caption := IntToStr(StrToInt(LBLSAIDAtotaltoqueporminuto.Caption)+ I_toqueporminuto);
+               LBLSAIDAtotaltempodigitacao.Caption := TimeToStr(StrToTime(LBLSAIDAtotaltempodigitacao.Caption) + T_tempodigitacao);
+               T_hiniciodigitacao := T_horaatual; // Create StrToTime('00:00:00');
+               I_toqueporminuto := 0;        // Create 0;
+               T_tempodigitacao := StrToTime('00:00:00'); // Sair do laço
+             end;
+        end;
+end;
+
+procedure TFRMverificaratividadesusuario.Fechar1Click(Sender: TObject);
+begin
+    Application.Terminate;
+end;
+
+end.

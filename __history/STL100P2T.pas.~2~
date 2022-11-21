@@ -1,0 +1,65 @@
+unit STL100P2T;
+
+{Mostrar Mensagens Visuais}
+
+{Unidade responsável pela apresentação da Mensagem Visual correspondente a
+Velocidade da Digitação}
+
+interface
+
+uses
+  Windows, ExtCtrls, Gauges, StdCtrls, Controls,
+  Classes, Messages, SysUtils, Graphics, Forms, Dialogs, ComCtrls,
+  jpeg, Buttons;
+
+type
+  TFRMmostrarmensagens = class(TForm)
+    PNLmensagem: TPanel;
+    IMGsinalamarelo: TImage;
+    IMGsinalverde: TImage;
+    IMGsinalvermelho: TImage;
+    procedure IMGsinalvermelhoClick(Sender: TObject);
+    procedure IMGsinalverdeClick(Sender: TObject);
+    procedure IMGsinalamareloClick(Sender: TObject);
+    procedure PNLvelocidadedigitacaoClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FRMmostrarmensagens: TFRMmostrarmensagens;
+  S_Topo : string[3];
+  S_Esquerda: string[4];
+  Topo, Esquerda: integer;
+  posicao : Text; {Variável interna de arquivo texto}
+
+implementation
+
+uses STL100P3T;
+
+{$R *.DFM}
+
+procedure TFRMmostrarmensagens.IMGsinalvermelhoClick(Sender: TObject);
+begin
+    FRMmostrarmensagens.Visible := False;
+end;
+
+procedure TFRMmostrarmensagens.IMGsinalverdeClick(Sender: TObject);
+begin
+    FRMmostrarmensagens.Visible := False;
+end;
+
+procedure TFRMmostrarmensagens.IMGsinalamareloClick(Sender: TObject);
+begin
+    FRMmostrarmensagens.Visible := False;
+end;
+
+procedure TFRMmostrarmensagens.PNLvelocidadedigitacaoClick(
+  Sender: TObject);
+begin
+    FRMmostrarmensagens.Visible := False;
+end;
+
+end.

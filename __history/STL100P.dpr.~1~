@@ -1,0 +1,25 @@
+program STL100P;
+
+{PREVEN - Sistema de Prevenção ao Dort/Ler}
+
+uses
+  Forms,
+  Windows,
+  STL100P1T in 'STL100P1T.pas' {FRMverificaratividadesusuario},
+  STL100P2T in 'STL100P2T.pas' {FRMmostrarmensagens},
+  STL100P3T in 'STL100P3T.pas' {FRMtelaapresentacao},
+  STL100P1U in 'STL100P1U.pas';
+
+{$R *.RES}
+
+begin
+  Application.Initialize;
+  Application.Title := 'Sentinela';
+  FRMtelaapresentacao := TFRMtelaapresentacao.Create(Application);
+  Application.CreateForm(TFRMmostrarmensagens, FRMmostrarmensagens);
+  Application.CreateForm(TFRMverificaratividadesusuario, FRMverificaratividadesusuario);
+//  FRMtelaapresentacao.Show;
+//  FRMtelaapresentacao.Refresh;
+//  sleep(1000);
+  Application.Run;
+end.
